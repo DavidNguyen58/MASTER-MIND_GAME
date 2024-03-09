@@ -1,7 +1,7 @@
 # MASTERMIND GAME
 
 ## 1. BACKGROUND
-It is a code-breaking game for two players invented in Isareal. The game consists of a codebreaker and a codemaker. The code-maker will arrange 4 colours in some position for the code-breaker to solve. Each time the code-breaker can make a guess and the code-maker can give information about how many of the guessed colour are in the correct order. 
+It is a code-breaking game for two players invented in Israel. The game consists of a codebreaker and a codemaker. The code-maker will arrange 4 colours in some position for the code-breaker to solve. Each time the code-breaker can make a guess and the code-maker can give information about how many of the guessed colour are in the correct order. 
 
 More information about the game could be found here <a href="https://en.wikipedia.org/wiki/Mastermind_(board_game)" target="_blank">Mastermind</a>
 
