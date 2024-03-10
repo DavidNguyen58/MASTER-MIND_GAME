@@ -11,7 +11,6 @@ def main():
         guess()
 
 
-
 def colour_order():
     # Prompt the player 1 to insert a correct order of the colours
     # The function should return a list of object in the form of color{position}. e.g red0
