@@ -5,29 +5,30 @@
 import itertools
 
 
-class Sentence():
+class Sentence:
 
-    def evaluate(self, model):
+    def evaluate(self, model: dict) -> bool:
         """Evaluates the logical sentence."""
         raise Exception("nothing to evaluate")
 
-    def formula(self):
+    def formula(self) -> str:
         """Returns string formula representing logical sentence."""
         return ""
 
-    def symbols(self):
+    def symbols(self) -> set:
         """Returns a set of all symbols in the logical sentence."""
         return set()
 
     @classmethod
-    def validate(cls, sentence):
+    def validate(cls, sentence) -> None:
         if not isinstance(sentence, Sentence):
             raise TypeError("must be a logical sentence")
 
     @classmethod
-    def parenthesize(cls, s):
+    def parenthesize(cls, s: str) -> str:
         """Parenthesizes an expression if not already parenthesized."""
-        def balanced(s):
+
+        def balanced(s) -> bool:
             """Checks if a string has balanced parentheses."""
             count = 0
             for c in s:
@@ -38,8 +39,11 @@ class Sentence():
                         return False
                     count -= 1
             return count == 0
-        if not len(s) or s.isalpha() or (
-            s[0] == "(" and s[-1] == ")" and balanced(s[1:-1])
+
+        if (
+            not len(s)
+            or s.isalpha()
+            or (s[0] == "(" and s[-1] == ")" and balanced(s[1:-1]))
         ):
             return s
         else:
