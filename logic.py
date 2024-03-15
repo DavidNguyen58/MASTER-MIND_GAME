@@ -52,28 +52,28 @@ class Sentence:
 
 class Symbol(Sentence):
 
-    def __init__(self, name):
+    def __init__(self, name: str):
         self.name = name
 
-    def __eq__(self, other):
+    def __eq__(self, other) -> bool:
         return isinstance(other, Symbol) and self.name == other.name
 
-    def __hash__(self):
+    def __hash__(self) -> int:
         return hash(("symbol", self.name))
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return self.name
 
-    def evaluate(self, model):
+    def evaluate(self, model: dict) -> bool:
         try:
             return bool(model[self.name])
         except KeyError:
             raise Exception(f"variable {self.name} not in model")
 
-    def formula(self):
+    def formula(self) -> str:
         return self.name
 
-    def symbols(self):
+    def symbols(self) -> set:
         return {self.name}
 
 
