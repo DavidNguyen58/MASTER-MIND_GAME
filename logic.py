@@ -45,7 +45,7 @@ class Sentence():
         else:
             return f"({s})"
 
-
+# Create a symbol for a sentence
 class Symbol(Sentence):
 
     def __init__(self, name):

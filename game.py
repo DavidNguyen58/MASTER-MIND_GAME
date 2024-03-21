@@ -1,43 +1,100 @@
-# FRONT_END 
-colours = ["red", "blue", "green", "yellow"]
-# Player 1 can set a goal
+import sys
+import itertools
+from logic import *
+
 def main():
-    # Prompt the user 1 to put colour order for player 2 to guess
-    player_1 = colour_order()
-    start()
-    # The game starts here
-    knowledge = None
+    if len(sys.argv) != 2:
+        print("Usage: python game.py [N]")
+        return 0
+    
+    try:
+        val = int(sys.argv[1])
+        if val < 4  or val > 6:
+            print("Please enter an integer between 4 and 8")
+    except:
+        print("Please enter an integer")
+        return
+    
+    colours = ["red", "blue", "green", "yellow", "black"]
+    colours = tuple(colours[0: int(sys.argv[1])])
+    order = player_1(colours)
+    KB = knowledge_base(colours)
+    print("THE GAME STARTS NOW")
+    print(f"You will need to guess {val} colours. Please put your guessing order in a line")
     while True:
-        guess()
+        guess = player_2()
+        check = compare_guess(guess, order)
+        if check == len(order):
+            result(order, colours)
+            print("That's the correct position")
+            return
+        else:
+            # Update KnowledgeBase
+            print(check)
+            KB = update_KB(KB, guess, check)
 
 
-def colour_order():
-    # Prompt the player 1 to insert a correct order of the colours
-    # The function should return a list of object in the form of color{position}. e.g red0
-    raise NotImplementedError
 
-def start():
-    # Generate a title showing that the game is starting now and prompt the second player to play
-    raise NotImplementedError
+def player_1(colours):
+    # Set up the goal for the game
+    print(colours)
+    goal = input("Enter the order: ")
+    goal = goal.strip().split()
+    return goal
 
-# Player 2 will need to find out the correct order in the minimum of move with the support of A.I
 
-def knowledge_base():
-    # Encode all necessary information we know about the problem.
-    raise NotImplementedError
+def knowledge_base(colours):
+    # Create symbol for each colour
+    symbols = []
+    # Each colour has a position
+    for i in range(len(colours)):
+        for colour in colours:
+            symbols.append(Symbol(f"{colour}{i}"))
+    KB = And()
+    # A colour only has 1 position
+    for colour in colours:
+        for i in range(len(colours)):
+            for j in range(len(colours)):
+                if i != j:
+                    # e.g red1 -> not red0, red2, red3, ...
+                    KB.add(Implication(Symbol(f"{colour}{i}"), Not(Symbol(f"{colour}{j}"))))
 
-def new_knowledge(position):
-    # Input is a list of positions for colours
-    # Update the existing knowledge with the new information
-    raise NotImplementedError
+    # A position only has 1 colour
+    for i in range(len(colours)):
+        for c1 in colours:
+            for c2 in colours:
+                if c1 != c2:
+                    # red1 -> not yellow1, green1 and so on
+                    x = Symbol(f"{c1}{i}")
+                    y = Not(Symbol(f"{c2}{i}"))
+                    KB.add(Implication(x, y))
+    return KB
 
-def guess():
-    result = []
-    for i in range(4):
-        x = input(f"Position for{colours[i]}: ")
-        result.append(x)
-    return result
 
+def player_2():
+    guess = input("Your guess: ")
+    guess = guess.strip().split()
+    return guess
+
+
+def compare_guess(guess, order):
+    # Take two lists of positions and compare it together
+    counter = 0
+    for i in range(len(guess)):
+        if guess[i] == order[i]:
+            counter += 1
+    return counter
+    
+
+def result(order, colours):
+    for i in range(len(colours)):
+        print(f"{colours[i]}{order[i]} ", end="")
+    print()
+
+
+def update_KB(KB, guess, colours, check):
+    # Update the knowledge_base
+    ...
 
 if __name__ == "__main__":
     main()

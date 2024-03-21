@@ -11,6 +11,9 @@ knowledge = And(
     A,
     Implication(A, B)
 )
+
+
+knowledge.add(Implication(B, A))
 # The model checking algorithm will check for entailment.
 # In this case, KB ⊨ B, so it will print out in the terminal the message.
 if model_check(knowledge, B):
