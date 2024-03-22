@@ -35,9 +35,8 @@ def main():
 
 
 
-def player_1(colours):
+def player_1():
     # Set up the goal for the game
-    print(colours)
     goal = input("Enter the order: ")
     goal = goal.strip().split()
     return goal
