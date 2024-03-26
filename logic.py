@@ -152,6 +152,10 @@ class Or(Sentence):
         disjuncts = ", ".join([str(disjunct) for disjunct in self.disjuncts])
         return f"Or({disjuncts})"
 
+    def add(self, disjunct):
+        Sentence.validate(disjunct)
+        self.disjuncts.append(disjunct)
+
     def evaluate(self, model):
         return any(disjunct.evaluate(model) for disjunct in self.disjuncts)
 
