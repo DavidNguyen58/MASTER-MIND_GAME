@@ -2,60 +2,107 @@ import sys
 import itertools
 from logic import *
 
-def main():
-    if len(sys.argv) != 2:
-        print("Usage: python game.py [N]")
-        return 0
-    
-    try:
-        val = int(sys.argv[1])
-        if val < 4  or val > 6:
-            print("Please enter an integer between 4 and 8")
-    except:
-        print("Please enter an integer")
-        return
-    
-    colours = ["red", "blue", "green", "yellow", "black"]
-    colours = tuple(colours[0: int(sys.argv[1])])
-    order = player_1(colours)
+def main():    
+    colours = ["red", "blue", "yellow", "green"]
+    colours = colours[0: int(sys.argv[1])]
+    symbols  = create_symbol(colours)
+
     KB = knowledge_base(colours)
+
+    goal = player_1(colours)
+
     print("THE GAME STARTS NOW")
-    print(f"You will need to guess {val} colours. Please put your guessing order in a line")
+    print(f"You will need to correctly guess {len(colours)} of {colours}. Please put your guessing order in a line.")
+
     while True:
-        guess = player_2()
-        check = compare_guess(guess, order)
-        if check == len(order):
-            result(order, colours)
+        guess = player_2(colours)
+        r = compare_guess(guess, goal)
+        if r == len(goal):
+            result(goal, colours)
             print("That's the correct position")
             return
         else:
             # Update KnowledgeBase
-            print(check)
-            KB = update_KB(KB, guess, check)
+            clauses = propositional_knowledege(guess, r)
+            KB = update_knowledge_base(KB, clauses, r)
+            for symbol in symbols:
+                if model_check(KB, symbol):
+                    print(symbol)
 
 
+def create_symbol(colours):
+    # Create a symbol for each colour
+    symbols = []
+    for i in range(len(colours)):
+        for c in colours:
+            s = Symbol(f"{c}{i}")
+            symbols.append(s)
+    return symbols
 
-def player_1():
+
+def player_1(colours):
     # Set up the goal for the game
-    goal = input("Enter the order: ")
-    goal = goal.strip().split()
-    return goal
+    print("The order of the colour")
+    t = dict()
+    for c in colours:
+        t[c] = None
+    n = len(colours)
+    for i in range(n):
+        x = input(f"{i} position: ")
+        t[x] = f"{i}"
+    a = []
+    for key in t:
+        tmp = key + t[key]
+        a.append(tmp)
+    return a
+
+
+def player_2(colours):
+    print("Make your guess")
+    t = dict()
+    for c in colours:
+        t[c] = None
+    n = len(colours)
+    for i in range(n):
+        x = input(f"{i} position: ")
+        t[x] = f"{i}"
+    a = []
+    for key in t:
+        tmp = key + t[key]
+        a.append(tmp)
+    return a
+
+
+def compare_guess(guess, goal):
+    # Take two lists of positions and compare it together
+    counter = 0
+    for i in range(len(guess)):
+        if guess[i] == goal[i]:
+            counter += 1
+    return counter
+    
+
+def result(order, colours):
+    for i in range(len(colours)):
+        print(f"{colours[i]}{order[i]} ", end="")
+    print()
 
 
 def knowledge_base(colours):
-    # Create symbol for each colour
-    symbols = []
-    # Each colour has a position
-    for i in range(len(colours)):
-        for colour in colours:
-            symbols.append(Symbol(f"{colour}{i}"))
     KB = And()
+    for color in colours:
+        KB.add(Or(
+            Symbol(f"{color}0"),
+            Symbol(f"{color}1"),
+            Symbol(f"{color}2"),
+            Symbol(f"{color}3")
+    ))
     # A colour only has 1 position
     for colour in colours:
         for i in range(len(colours)):
             for j in range(len(colours)):
                 if i != j:
-                    # e.g red1 -> not red0, red2, red3, ...
+                    # e.g red1 -> not red0, not red2, not red3, ...
                     KB.add(Implication(Symbol(f"{colour}{i}"), Not(Symbol(f"{colour}{j}"))))
 
     # A position only has 1 colour
@@ -69,31 +116,40 @@ def knowledge_base(colours):
                     KB.add(Implication(x, y))
     return KB
 
+def propositional_knowledege(guess, correct):
+    if correct == 0:
+        return [guess]
+    p = list(itertools.combinations(guess, correct))
+    # Return the full set
+    result = []
+    for i in p:
+        x = list(i)
+        for j in guess:
+            if j not in x:
+                x.append(j)
+        result.append(x)
+    return result
+            
 
-def player_2():
-    guess = input("Your guess: ")
-    guess = guess.strip().split()
-    return guess
-
-
-def compare_guess(guess, order):
-    # Take two lists of positions and compare it together
-    counter = 0
-    for i in range(len(guess)):
-        if guess[i] == order[i]:
-            counter += 1
-    return counter
+def update_knowledge_base(KB, clauses, correct):
+    if correct == 0:
+        for var in clauses[0]:
+            KB.add(Not(Symbol(var)))
+        return KB
+    new = Or()
+    for clause in clauses:
+        a = And()
+        i = 0
+        for var in clause:
+            if i >= correct:
+                a.add(Not(Symbol(var)))
+            else:
+                a.add(Symbol(var))
+            i += 1
+        new.add(a)
+    KB.add(new)
+    return KB
     
-
-def result(order, colours):
-    for i in range(len(colours)):
-        print(f"{colours[i]}{order[i]} ", end="")
-    print()
-
-
-def update_KB(KB, guess, colours, check):
-    # Update the knowledge_base
-    ...
 
 if __name__ == "__main__":
     main()
