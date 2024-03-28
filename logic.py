@@ -49,7 +49,7 @@ class Sentence:
         else:
             return f"({s})"
 
-
+# Create a symbol for a sentence
 class Symbol(Sentence):
 
     def __init__(self, name: str):
@@ -155,6 +155,10 @@ class Or(Sentence):
     def __repr__(self):
         disjuncts = ", ".join([str(disjunct) for disjunct in self.disjuncts])
         return f"Or({disjuncts})"
+
+    def add(self, disjunct):
+        Sentence.validate(disjunct)
+        self.disjuncts.append(disjunct)
 
     def evaluate(self, model):
         return any(disjunct.evaluate(model) for disjunct in self.disjuncts)
