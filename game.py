@@ -1,18 +1,22 @@
-import sys
 import itertools
+import sys
+
 from logic import *
 
-def main():    
+
+def main():
     colours = ["red", "blue", "yellow", "green"]
-    colours = colours[0: int(sys.argv[1])]
-    symbols  = create_symbol(colours)
+    colours = colours[0 : int(sys.argv[1])]
+    symbols = create_symbol(colours)
 
     KB = knowledge_base(colours)
 
     goal = player_1(colours)
 
     print("THE GAME STARTS NOW")
-    print(f"You will need to correctly guess {len(colours)} of {colours}. Please put your guessing order in a line.")
+    print(
+        f"You will need to correctly guess {len(colours)} of {colours}. Please put your guessing order in a line."
+    )
 
     while True:
         guess = player_2(colours)
@@ -80,7 +84,7 @@ def compare_guess(guess, goal):
         if guess[i] == goal[i]:
             counter += 1
     return counter
-    
+
 
 def result(order, colours):
     for i in range(len(colours)):
@@ -91,19 +95,23 @@ def result(order, colours):
 def knowledge_base(colours):
     KB = And()
     for color in colours:
-        KB.add(Or(
-            Symbol(f"{color}0"),
-            Symbol(f"{color}1"),
-            Symbol(f"{color}2"),
-            Symbol(f"{color}3")
-    ))
+        KB.add(
+            Or(
+                Symbol(f"{color}0"),
+                Symbol(f"{color}1"),
+                Symbol(f"{color}2"),
+                Symbol(f"{color}3"),
+            )
+        )
     # A colour only has 1 position
     for colour in colours:
         for i in range(len(colours)):
             for j in range(len(colours)):
                 if i != j:
                     # e.g red1 -> not red0, not red2, not red3, ...
-                    KB.add(Implication(Symbol(f"{colour}{i}"), Not(Symbol(f"{colour}{j}"))))
+                    KB.add(
+                        Implication(Symbol(f"{colour}{i}"), Not(Symbol(f"{colour}{j}")))
+                    )
 
     # A position only has 1 colour
     for i in range(len(colours)):
@@ -115,6 +123,7 @@ def knowledge_base(colours):
                     y = Not(Symbol(f"{c2}{i}"))
                     KB.add(Implication(x, y))
     return KB
+
 
 def propositional_knowledege(guess, correct):
     if correct == 0:
@@ -129,7 +138,7 @@ def propositional_knowledege(guess, correct):
                 x.append(j)
         result.append(x)
     return result
-            
+
 
 def update_knowledge_base(KB, clauses, correct):
     if correct == 0:
@@ -149,7 +158,7 @@ def update_knowledge_base(KB, clauses, correct):
         new.add(a)
     KB.add(new)
     return KB
-    
+
 
 if __name__ == "__main__":
     main()
