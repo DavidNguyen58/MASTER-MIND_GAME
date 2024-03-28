@@ -7,7 +7,7 @@ from logic import *
 def main():
     colours = ["red", "blue", "yellow", "green"]
     colours = colours[0 : int(sys.argv[1])]
-    symbols = create_symbol(colours)
+    symbols = create_symbols(colours)
 
     KB = knowledge_base(colours)
 
@@ -34,13 +34,9 @@ def main():
                     print(symbol)
 
 
-def create_symbol(colours):
+def create_symbols(colours):
     # Create a symbol for each colour
-    symbols = []
-    for i in range(len(colours)):
-        for c in colours:
-            s = Symbol(f"{c}{i}")
-            symbols.append(s)
+    symbols = [Symbol(f"{c}{i}") for i, c in enumerate(colours)]
     return symbols
 
 
