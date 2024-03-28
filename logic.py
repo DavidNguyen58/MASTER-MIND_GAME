@@ -2,11 +2,8 @@
 
 # The code is imported from https://cs50.harvard.edu/ai/2024/projects/1/knights/ in the logic file.
 
-import itertools
-
 
 class Sentence:
-
     def evaluate(self, model: dict) -> bool:
         """Evaluates the logical sentence."""
         raise Exception("nothing to evaluate")
@@ -263,8 +260,9 @@ def model_check(knowledge, query):
             model_false[p] = False
 
             # Ensure entailment holds in both models
-            return (check_all(knowledge, query, remaining, model_true) and
-                    check_all(knowledge, query, remaining, model_false))
+            return check_all(knowledge, query, remaining, model_true) and check_all(
+                knowledge, query, remaining, model_false
+            )
 
     # Get all symbols in both knowledge and query
     symbols = set.union(knowledge.symbols(), query.symbols())
