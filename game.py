@@ -14,7 +14,9 @@ def main():
 
     KB = knowledge_base(colours)
 
-    goal = player_1(colours)
+    # Set up the goal for the game
+    print("The order of the colour")
+    goal = get_player_colour_input(colours)
 
     print("THE GAME STARTS NOW")
     print(
@@ -22,7 +24,8 @@ def main():
     )
 
     while True:
-        guess = player_2(colours)
+        print("Make your guess")
+        guess = get_player_colour_input(colours)
         r = compare_guess(guess, goal)
         if r == len(goal):
             result(goal, colours)
@@ -43,25 +46,7 @@ def create_symbols(colours):
     return symbols
 
 
-def player_1(colours):
-    # Set up the goal for the game
-    print("The order of the colour")
-    t = dict()
-    for c in colours:
-        t[c] = None
-    n = len(colours)
-    for i in range(n):
-        x = input(f"{i} position: ")
-        t[x] = f"{i}"
-    a = []
-    for key in t:
-        tmp = key + t[key]
-        a.append(tmp)
-    return a
-
-
-def player_2(colours):
-    print("Make your guess")
+def get_player_colour_input(colours):
     t = dict()
     for c in colours:
         t[c] = None
