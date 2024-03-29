@@ -1,12 +1,15 @@
 import itertools
-import sys
 
 from logic import *
 
 
 def main():
+    number_of_colours_to_use = int(
+        input("Enter the the number of colours to use in the game: ")
+    )
+
     colours = ["red", "blue", "yellow", "green"]
-    colours = colours[0 : int(sys.argv[1])]
+    colours = colours[0:number_of_colours_to_use]
     symbols = create_symbols(colours)
 
     KB = knowledge_base(colours)
