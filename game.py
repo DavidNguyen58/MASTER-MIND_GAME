@@ -81,8 +81,6 @@ def result(order: list[str], colours: list[str]) -> None:
 
 
 def create_knowledge_base(colours: list[str]) -> And:
-    KB = And()
-
     clauses_to_add = []
 
     for colour in colours:
@@ -114,9 +112,7 @@ def create_knowledge_base(colours: list[str]) -> And:
         if c1 != c2
     ]
 
-    for clause in clauses_to_add:
-        KB.add(clause)
-
+    KB = And(*clauses_to_add)
     return KB
 
 
