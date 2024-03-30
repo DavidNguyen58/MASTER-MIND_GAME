@@ -135,23 +135,21 @@ def propositional_knowledege(guess: list[str], correct: int) -> list[list[str]]:
     return result
 
 
-def update_knowledge_base(KB: And, clauses: list[list[str]], correct: int) -> And:
-    if correct == 0:
-        for var in clauses[0]:
-            KB.add(Not(Symbol(var)))
-        return KB
-    new = Or()
+def update_knowledge_base(
+    KB: And, clauses: list[list[str]], number_of_correct_guesses: int
+) -> And:
+    disjunction = Or()
+
     for clause in clauses:
-        a = And()
-        i = 0
-        for var in clause:
-            if i >= correct:
-                a.add(Not(Symbol(var)))
-            else:
-                a.add(Symbol(var))
-            i += 1
-        new.add(a)
-    KB.add(new)
+        symbols = [
+            Not(Symbol(var)) if i >= number_of_correct_guesses else Symbol(var)
+            for i, var in enumerate(clause)
+        ]
+        conjunction = And(*symbols)
+        disjunction.add(conjunction)
+
+    KB.add(disjunction)
+
     return KB
 
 
