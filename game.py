@@ -12,7 +12,7 @@ def main() -> None:
     colours = colours[0:number_of_colours_to_use]
     symbols = create_symbols(colours)
 
-    KB = knowledge_base(colours)
+    KB = create_knowledge_base(colours)
 
     # Set up the goal for the game
     print("The order of the colour")
@@ -80,36 +80,43 @@ def result(order: list[str], colours: list[str]) -> None:
     print()
 
 
-def knowledge_base(colours: list[str]) -> And:
+def create_knowledge_base(colours: list[str]) -> And:
     KB = And()
-    for color in colours:
-        KB.add(
-            Or(
-                Symbol(f"{color}0"),
-                Symbol(f"{color}1"),
-                Symbol(f"{color}2"),
-                Symbol(f"{color}3"),
-            )
-        )
-    # A colour only has 1 position
-    for colour in colours:
-        for i in range(len(colours)):
-            for j in range(len(colours)):
-                if i != j:
-                    # e.g red1 -> not red0, not red2, not red3, ...
-                    KB.add(
-                        Implication(Symbol(f"{colour}{i}"), Not(Symbol(f"{colour}{j}")))
-                    )
 
-    # A position only has 1 colour
-    for i in range(len(colours)):
-        for c1 in colours:
-            for c2 in colours:
-                if c1 != c2:
-                    # red1 -> not yellow1, green1 and so on
-                    x = Symbol(f"{c1}{i}")
-                    y = Not(Symbol(f"{c2}{i}"))
-                    KB.add(Implication(x, y))
+    clauses_to_add = []
+
+    for colour in colours:
+        clauses_to_add += [
+            Or(
+                Symbol(f"{colour}0"),
+                Symbol(f"{colour}1"),
+                Symbol(f"{colour}2"),
+                Symbol(f"{colour}3"),
+            )
+        ]
+
+        # Each colour has only 1 position
+        # e.g red1 -> not red0, not red2, not red3, ...
+        clauses_to_add += [
+            Implication(Symbol(f"{colour}{i}"), Not(Symbol(f"{colour}{j}")))
+            for i in range(len(colours))
+            for j in range(len(colours))
+            if i != j
+        ]
+
+    # Each position has only 1 colour
+    # red1 -> not yellow1, green1 and so on
+    clauses_to_add += [
+        Implication(Symbol(f"{c1}{i}"), Not(Symbol(f"{c2}{i}")))
+        for i in range(len(colours))
+        for c1 in colours
+        for c2 in colours
+        if c1 != c2
+    ]
+
+    for clause in clauses_to_add:
+        KB.add(clause)
+
     return KB
 
 
