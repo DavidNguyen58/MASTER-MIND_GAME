@@ -3,7 +3,7 @@ import itertools
 from logic import *
 
 
-def main():
+def main() -> None:
     number_of_colours_to_use = int(
         input("Enter the the number of colours to use in the game: ")
     )
@@ -40,13 +40,13 @@ def main():
                     print(symbol)
 
 
-def create_symbols(colours):
+def create_symbols(colours: list[str]) -> list[Symbol]:
     # Create a symbol for each colour
     symbols = [Symbol(f"{c}{i}") for i, c in enumerate(colours)]
     return symbols
 
 
-def get_player_colour_input(colours):
+def get_player_colour_input(colours: list[str]) -> list[str]:
     t = dict()
     for c in colours:
         t[c] = None
@@ -61,7 +61,7 @@ def get_player_colour_input(colours):
     return a
 
 
-def compare_guess(guess, goal):
+def compare_guess(guess: list[str], goal: list[str]) -> int:
     # Take two lists of positions and compare it together
     counter = 0
     for i in range(len(guess)):
@@ -70,13 +70,13 @@ def compare_guess(guess, goal):
     return counter
 
 
-def result(order, colours):
+def result(order: list[str], colours: list[str]) -> None:
     for i in range(len(colours)):
         print(f"{colours[i]}{order[i]} ", end="")
     print()
 
 
-def knowledge_base(colours):
+def knowledge_base(colours: list[str]) -> And:
     KB = And()
     for color in colours:
         KB.add(
@@ -109,7 +109,7 @@ def knowledge_base(colours):
     return KB
 
 
-def propositional_knowledege(guess, correct):
+def propositional_knowledege(guess: list[str], correct: int) -> list[list[str]]:
     if correct == 0:
         return [guess]
     p = list(itertools.combinations(guess, correct))
@@ -124,7 +124,7 @@ def propositional_knowledege(guess, correct):
     return result
 
 
-def update_knowledge_base(KB, clauses, correct):
+def update_knowledge_base(KB: And, clauses: list[list[str]], correct: int) -> And:
     if correct == 0:
         for var in clauses[0]:
             KB.add(Not(Symbol(var)))
