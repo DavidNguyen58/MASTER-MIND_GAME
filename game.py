@@ -26,15 +26,15 @@ def main() -> None:
     while True:
         print("Make your guess")
         guess = get_player_colour_input(colours)
-        r = compare_guess(guess, goal)
-        if r == len(goal):
+        number_of_correct_guesses = get_number_of_correct_guesses(guess, goal)
+        if number_of_correct_guesses == len(goal):
             result(goal, colours)
             print("That's the correct position")
             return
         else:
             # Update KnowledgeBase
-            clauses = propositional_knowledege(guess, r)
-            KB = update_knowledge_base(KB, clauses, r)
+            clauses = propositional_knowledege(guess, number_of_correct_guesses)
+            KB = update_knowledge_base(KB, clauses, number_of_correct_guesses)
             for symbol in symbols:
                 if model_check(KB, symbol):
                     print(symbol)
@@ -61,13 +61,17 @@ def get_player_colour_input(colours: list[str]) -> list[str]:
     return a
 
 
-def compare_guess(guess: list[str], goal: list[str]) -> int:
-    # Take two lists of positions and compare it together
-    counter = 0
+def get_number_of_correct_guesses(guess: list[str], goal: list[str]) -> int:
+    # Take two lists of positions and compare them together
+    number_of_correct_guesses = 0
+
     for i in range(len(guess)):
-        if guess[i] == goal[i]:
-            counter += 1
-    return counter
+        if guess[i] != goal[i]:
+            continue
+
+        number_of_correct_guesses += 1
+
+    return number_of_correct_guesses
 
 
 def result(order: list[str], colours: list[str]) -> None:
